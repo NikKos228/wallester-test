@@ -1,0 +1,87 @@
+{{template "main" .}}
+
+{{define "title"}}Add Person{{end}}
+
+{{define "main"}}
+    <h2>Add Person</h2>
+
+    <form method="POST" action="/add">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="firstName">Firstname</label>
+                <input type="text" class="form-control" id="firstName" name="firstName" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="lastName">Surname</label>
+                <input type="text" class="form-control" id="lastName" name="lastName" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Date of birth</label>
+                <div>
+                    <div class="form-check form-check-inline">
+                        <select id="days" name="days" class="form-control" required></select>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <select id="months" name="months" class="form-control" required></select>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <select id="years" name="years" class="form-control" required></select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" class="form-control">
+                    <option selected>Male</option>
+                    <option>Female</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="address">Address</label>
+                <input type="text" class="form-control" id="address" name="address">
+            </div>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit form</button>
+    </form>
+{{end}}
+
+{{define "scripts"}}
+    <script type="text/javascript">
+        $(function () {
+            for (i = new Date().getFullYear() ; i > 1900; i--) {
+                $('#years').append($('<option />').val(i).html(i));
+            }
+            for (i = 1; i < 13; i++) {
+                $('#months').append($('<option />').val(i < 10 ? "0" + i : i).html(i < 10 ? "0" + i : i));
+            }
+            updateNumberOfDays();
+
+            $('#years, #months').change(function () {
+                updateNumberOfDays();
+            });
+        });
+
+        function updateNumberOfDays() {
+            $('#days').html('');
+            month = $('#months').val();
+            year = $('#years').val();
+            days = daysInMonth(month, year);
+
+            for (i = 1; i < days + 1 ; i++) {
+                $('#days').append($('<option />').val(i < 10 ? "0" + i : i).html(i < 10 ? "0" + i : i));
+            }
+        }
+
+        function daysInMonth(month, year) {
+            return new Date(year, month, 0).getDate();
+        }
+    </script>
+{{end}}

@@ -1,0 +1,39 @@
+{{template "main" .}}
+
+{{define "title"}}{{.PageTitle}}{{end}}
+
+{{define "main"}}
+    <h2>{{.PageTitle}}</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col"><a href="/search?q={{.Search}}&page={{.Page}}&orderBy=first_name&order={{.Order}}">Name</a></th>
+            <th scope="col"><a href="/search?q={{.Search}}&page={{.Page}}&orderBy=gender&order={{.Order}}">Gender</a></th>
+            <th scope="col"><a href="/search?q={{.Search}}&page={{.Page}}&orderBy=email&order={{.Order}}">Email</a></th>
+            <th scope="col"><a href="/search?q={{.Search}}&page={{.Page}}&orderBy=birth_date&order={{.Order}}">Birthday</a></th>
+            <th scope="col"><a href="/search?q={{.Search}}&page={{.Page}}&orderBy=address&order={{.Order}}">Address</a></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {{range .Customers}}
+            <tr>
+                <th scope="row"><a href="/edit?id={{.Id}}">{{.Firstname}} {{.Surname}}</a></th>
+                <td>{{.Gender}}</td>
+                <td>{{.Email}}</td>
+                <td>{{.Birthday}}</td>
+                <td>{{.Address}}</td>
+                <td><a href="/delete?id={{.ID}}"><b>DELETE</b></a></td>
+            </tr>
+        {{end}}
+        </tbody>
+    </table>
+    <ul class="list-group list-group-horizontal">
+        {{if .PrevPage}}
+            <li class="list-group-item"><a href="/search?page={{.Prev}}{{if .Search}}&q={{.Search}}{{end}}">Previous</a></li>
+        {{end}}
+        <li class="list-group-item"><a href="/search?page={{.Next}}{{if .Search}}&q={{.Search}}{{end}}">Next</a></li>
+    </ul>
+{{end}}
+
+{{define "scripts"}}{{end}}

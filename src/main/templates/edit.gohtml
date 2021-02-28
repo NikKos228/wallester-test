@@ -1,0 +1,47 @@
+{{template "main" .}}
+
+{{define "title"}}Edit Person{{end}}
+
+{{define "main"}}
+    <h2>Edit Person</h2>
+
+    <form method="POST" action="/edit">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <input type="hidden" id="id" name="id" value="{{.ID}}"/>
+                <label for="firstName">{{.Firstname}}</label>
+                <input type="text" class="form-control" id="firstName" name="firstName" value="{{.Firstname}}" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="lastName">Surname</label>
+                <input type="text" class="form-control" id="lastName" name="lastName" value="{{.Surname}}" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="birthDate">Date of birth</label>
+                <input type="text" class="form-control" id="birthDate" name="birthDate" value="{{.Birthday}}" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" class="form-control" value="{{.Gender}}">
+                    <option selected>Male</option>
+                    <option>Female</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{.Email}}" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="address">Address</label>
+                <input type="text" class="form-control" id="address" name="address" value="{{.Email}}">
+            </div>
+        </div>
+        <button class="btn btn-primary" type="submit">Update User</button>
+    </form>
+{{end}}
+
+{{define "scripts"}}{{end}}
