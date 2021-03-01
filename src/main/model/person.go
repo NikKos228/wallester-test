@@ -1,4 +1,4 @@
-package models
+package model
 
 import (
 	"database/sql"
@@ -32,7 +32,6 @@ func (db *database) GetPerson() ([]*Person, error) {
 		return nil, err
 	}
 	defer rows.Close()
-
 	people := make([]*Person, 0)
 	for rows.Next() {
 		person := new(Person)
@@ -110,19 +109,17 @@ func (db *database) UpdatePerson(person Person) error {
 	}
 	return nil
 }
+
 func (db *database) GetByName(name, orderBy, order string, limit, skips int) ([]*Person, error) {
 	sqlStatement := `SELECT id, first_name, last_name, 
 	birth_date, gender, email, address FROM customers 
 	WHERE first_name SIMILAR TO $1 OR last_name SIMILAR TO $1 
 	ORDER BY ` + orderBy + ` ` + order + ` LIMIT $2 OFFSET $3;`
-
 	rows, err := db.Query(sqlStatement, name, limit, skips)
-
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-
 	people := make([]*Person, 0)
 	for rows.Next() {
 		person := new(Person)
@@ -134,11 +131,9 @@ func (db *database) GetByName(name, orderBy, order string, limit, skips int) ([]
 			&person.Email,
 			&person.Address,
 			&person.Id)
-
 		if err != nil {
 			return nil, err
 		}
-
 		person.Birthday = birthdate(person.Birthday)
 		people = append(people, person)
 	}

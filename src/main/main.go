@@ -73,7 +73,6 @@ func main() {
 	http.HandleFunc("/edit", env.EditPerson)
 	http.HandleFunc("/search", env.SearchPerson)
 	http.HandleFunc("/delete", env.DeletePerson)
-
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -82,9 +81,7 @@ func (env *Env) PersonList(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-
 	people, err := env.db.GetPerson()
-
 	if err != nil {
 		http.Error(w, http.StatusText(500), 500)
 		return
@@ -94,14 +91,12 @@ func (env *Env) PersonList(w http.ResponseWriter, r *http.Request) {
 		"templates/main.gohtml",
 		"templates/nav.gohtml",
 	}
-
 	templ, err := template.ParseFiles(files...)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, "Server error", 500)
 		return
 	}
-
 	err = templ.Execute(w, people)
 	if err != nil {
 		log.Println(err.Error())
@@ -170,35 +165,29 @@ func (env *Env) EditPerson(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-
 	id, err := strconv.Atoi(r.FormValue("ID"))
-
 	switch r.Method {
 	case "GET":
 		if err != nil {
 			http.Error(w, http.StatusText(400), http.StatusBadRequest)
 			return
 		}
-
 		person, err := env.db.GetById(id)
 		if err != nil {
 			http.Error(w, http.StatusText(400), http.StatusBadRequest)
 			return
 		}
-
 		files := []string{
 			"templates/edit.gohtml",
 			"templates/main.gohtml",
 			"templates/nav.gohtml",
 		}
-
 		templ, err := template.ParseFiles(files...)
 		if err != nil {
 			log.Println(err.Error())
 			http.Error(w, "Internal Server Error", 500)
 			return
 		}
-
 		err = templ.Execute(w, person)
 		if err != nil {
 			log.Println(err.Error())
@@ -227,7 +216,6 @@ func (env *Env) EditPerson(w http.ResponseWriter, r *http.Request) {
 		person.Gender = r.FormValue("gender")
 		person.Email = r.FormValue("email")
 		person.Address = r.FormValue("address")
-
 		err := env.db.UpdatePerson(person)
 		if err != nil {
 			log.Println(err.Error())
@@ -236,14 +224,13 @@ func (env *Env) EditPerson(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
+
 func (env *Env) SearchPerson(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/search" {
 		http.NotFound(w, r)
 		return
 	}
-
 	var prev, next int
-
 	page, err := strconv.Atoi(r.FormValue("page"))
 	if err != nil {
 		page = 1
@@ -251,20 +238,15 @@ func (env *Env) SearchPerson(w http.ResponseWriter, r *http.Request) {
 	if page < 1 {
 		page = 1
 	}
-
 	next = page + 1
 	prev = page - 1
-
 	skips := limit * (page - 1)
-
 	search := r.FormValue("q")
-
 	orderBy := "id"
 	orderByParam := r.FormValue("orderBy")
 	if orderByParam != "" {
 		orderBy = orderByParam
 	}
-
 	order := "ASC"
 	param := r.FormValue("order")
 	if param != "" {
@@ -274,13 +256,11 @@ func (env *Env) SearchPerson(w http.ResponseWriter, r *http.Request) {
 			order = "ASC"
 		}
 	}
-
 	people, err := env.db.GetByName(search, orderBy, order, limit, skips)
 	if err != nil {
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
-
 	data := Page{
 		Title:   "Search results",
 		People:  people,
@@ -291,38 +271,34 @@ func (env *Env) SearchPerson(w http.ResponseWriter, r *http.Request) {
 		Page:    page,
 		Order:   order,
 	}
-
 	files := []string{
 		"templates/search.gohtml",
 		"templates/main.gohtml",
 		"templates/nav.gohtml",
 	}
-
 	tmpl, err := template.ParseFiles(files...)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 		return
 	}
-
 	err = tmpl.Execute(w, data)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 	}
 }
+
 func (env *Env) DeletePerson(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/delete" {
 		http.NotFound(w, r)
 		return
 	}
-
 	id, err := strconv.Atoi(r.FormValue("id"))
 	if err != nil {
 		http.Error(w, http.StatusText(400), http.StatusBadRequest)
 		return
 	}
-
 	err = env.db.DeletePerson(id)
 	if err != nil {
 		http.Error(w, http.StatusText(400), http.StatusBadRequest)
